@@ -1,0 +1,59 @@
+import { writable } from 'svelte/store';
+
+let L: typeof import('leaflet');
+let latLng = { lat: 33.79105092934356, lng: -84.37130870603511 };
+
+export interface Parameter {
+    param_id: string;
+    param_value: number;
+    param_type: number;
+    param_count: number;
+    param_index: number;
+}
+
+export interface ParameterMeta {
+    min?: number;
+    max?: number;
+    increment?: number;
+    description?: string;
+    units?: string;
+}
+
+export const onlineStore = writable<boolean>(false);
+export const mavModelStore = writable<string>('UNKNOWN');
+export const mavTypeStore = writable<string>('Unknown');
+export const mavArmedStateStore = writable<boolean>(false);
+export const mavStateStore = writable<string>('Unknown');
+export const mavModeStore = writable<string>('Unknown');
+export const mavLocationStore = writable<L.LatLng | { lat: number; lng: number }>(latLng);
+export const mavSatelliteStore = writable<{ total: number; hdop: number }>({ total: 0, hdop: 999.0 });
+export const mavHeadingStore = writable<number>(320);
+export const mavAltitudeStore = writable<number>(0);
+export const mavSpeedStore = writable<number>(0);
+export const mavPitchStore = writable<number>(0);    // degrees, positive = nose up
+export const mavRollStore = writable<number>(0);     // degrees, positive = right wing down
+export const mavBatteryStore = writable<number|null>(null);
+export const mavlinkLogStore = writable<string[]>([]);
+export const mavlinkParamStore = writable<{[key: string]: Parameter}>({});
+
+// Gimbal / camera telemetry stores
+export const mavGimbalTiltStore  = writable<number>(0);   // degrees, -90 (down) to 0 (forward)
+export const mavGimbalPanStore   = writable<number>(0);   // degrees, -180 to 180
+export const mavGimbalZoomStore  = writable<number>(1.0); // zoom multiplier 1x–10x
+
+// Combined gimbal store for easier consumption
+export const mavGimbalStore = writable<{
+  pitch: number;
+  roll: number;
+  yaw: number;
+  zoom: number;
+}>({
+  pitch: 0,
+  roll: 0,
+  yaw: 0,
+  zoom: 1.0
+});
+
+// Pending arm state — set when a command is sent, cleared by COMMAND_ACK
+// While set, heartbeat updates to mavArmedStateStore are blocked
+export const mavPendingArmStore  = writable<boolean | null>(null); // null = no pending command
