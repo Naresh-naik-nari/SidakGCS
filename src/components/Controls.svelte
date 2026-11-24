@@ -10,11 +10,14 @@
     tertiaryColorStore
   } from '../stores/customizationStore';
   import { get } from 'svelte/store';
-  import { sendCommand, setAltitude } from '$lib/api/mavlink';
+  import { sendCommand, setAltitude, goToLocation } from '$lib/api/mavlink';
 
   let altitude = get(mavAltitudeStore);
   let maxSpeed: string = '';
   let altitudeSetPoint: string = '';
+  let flyToLat: string = '';
+  let flyToLon: string = '';
+  let flyToAlt: string = '';
 
   $: darkMode = $darkModeStore;
   $: primaryColor = $primaryColorStore;
@@ -48,16 +51,39 @@
   /** true when the current mode accepts GCS yaw commands */
   $: canSetYaw = YAW_CAPABLE_MODES.has(mavMode);
 
+  /** true when the vehicle is in GUIDED and can accept a global position target */
+  $: canFlyTo = mavMode === 'GUIDED';
+
   /**
    * Sets the vehicle's maximum horizontal speed via DO_CHANGE_SPEED.
-   * Works in most GPS modes. See: https://ardupilot.org/copter/docs/ac2_guidedmode.html#speed-control
+   * param1=1 (ground speed), param2=speed m/s, param3=-1 (no throttle change).
+   * Works in GUIDED and AUTO. Source: https://ardupilot.org/copter/docs/ac2_guidedmode.html#speed-control
    */
   async function setMaxSpeed(speed: number) {
     try {
+      // DO_CHANGE_SPEED: speed_type=1 (ground speed), speed m/s, throttle=-1 (no change)
       await sendCommand('DO_CHANGE_SPEED', [1, speed, -1], true);
       console.log(`[Controls] Max speed set to ${speed} m/s`);
     } catch (err) {
       console.error('[Controls] setMaxSpeed failed:', err);
+    }
+  }
+
+  /**
+   * Commands the vehicle to fly to a specific global position (Guided "Fly to Here").
+   * Vehicle must be in GUIDED mode. If not, optionally switches to it first.
+   * Source: https://ardupilot.org/copter/docs/ac2_guidedmode.html
+   */
+  async function flyToLocation(lat: number, lon: number, alt: number) {
+    if (!canFlyTo) {
+      console.warn(`[Controls] "Fly to Here" only works in GUIDED mode (current: ${mavMode})`);
+      return;
+    }
+    try {
+      await goToLocation(lat, lon, alt);
+      console.log(`[Controls] Fly to: lat=${lat} lon=${lon} alt=${alt} m`);
+    } catch (err) {
+      console.error('[Controls] flyToLocation failed:', err);
     }
   }
 
@@ -144,6 +170,53 @@
       </form>
     </div>
     <div class="separator"></div>
+    <div class="fly-to column flex flex-col items-center justify-center text-center min-w-[160px] gap-2 self-center">
+      <div class="label text-sm mb-1">
+        Fly to Here
+        <span class="text-xs text-gray-400 ml-1">(GUIDED only)</span>
+      </div>
+      <form class="flex flex-col gap-1 w-full items-center">
+        <input type="number" step="0.000001" class="form-input w-full" placeholder="Latitude °"
+          bind:value={flyToLat} disabled={!canFlyTo} />
+        <input type="number" step="0.000001" class="form-input w-full" placeholder="Longitude °"
+          bind:value={flyToLon} disabled={!canFlyTo} />
+        <input type="number" min="0" max="500" class="form-input w-full" placeholder="Alt (m AGL)"
+          bind:value={flyToAlt} disabled={!canFlyTo} />
+        <button
+          class="set-btn text-[8pt] rounded-full py-1 px-3 mt-1 flex items-center gap-1"
+          disabled={!canFlyTo}
+          title={canFlyTo
+            ? 'Send fly-to target (SET_POSITION_TARGET_GLOBAL_INT)'
+            : `Switch to GUIDED mode to use Fly to Here (current: ${mavMode})`}
+          on:click|preventDefault={async () => {
+            const lat = parseFloat(flyToLat);
+            const lon = parseFloat(flyToLon);
+            const alt = parseFloat(flyToAlt);
+            if (isNaN(lat) || isNaN(lon) || isNaN(alt)) return;
+            if (alt < 0) return;
+            await flyToLocation(lat, lon, alt);
+            flyToLat = ''; flyToLon = ''; flyToAlt = '';
+          }}
+        >
+          <i class="fas fa-location-arrow text-[8pt]"></i>
+          Go
+        </button>
+      </form>
+      <button
+        class="use-current-btn text-[7.5pt] rounded-full py-0.5 px-2 mt-0"
+        title="Pre-fill with current MAV position"
+        on:click={() => {
+          if (mavLocation) {
+            flyToLat = mavLocation.lat.toFixed(7);
+            flyToLon = mavLocation.lng.toFixed(7);
+            flyToAlt = altitude.toFixed(1);
+          }
+        }}
+      >
+        <i class="fas fa-crosshairs text-[7pt]"></i> Use current pos
+      </button>
+    </div>
+    <div class="separator"></div>
     <div class="alt-btns column flex flex-col items-center justify-center text-center space-y-4">
       <div class="flex flex-col items-center">
         <div class="label text-sm mb-1" title="Altitude Up">Altitude Up</div>
@@ -223,6 +296,19 @@
     color: #ffffff;
     background-color: #4e94f7;
     border: 1px solid var(--secondaryColor);
+  }
+
+  .use-current-btn {
+    color: var(--fontColor);
+    background-color: var(--tertiaryColor);
+    border: 1px solid var(--secondaryColor);
+    opacity: 0.8;
+    cursor: pointer;
+  }
+
+  .use-current-btn:hover {
+    opacity: 1;
+    background-color: #374151;
   }
 
   input[type='number'] {

@@ -21,6 +21,7 @@ import {
     loadMissionItem,
     clearAllMissionItems,
     setPositionLocal,
+    setPositionGlobal,
     setAltitudeGlobal,
     newLogs,
 } from '$lib/server/mavlink';
@@ -165,17 +166,40 @@ export const POST: RequestHandler = async (event): Promise<Response> => {
 
         // ── Position / altitude ────────────────────────────────────────────
         case 'set_position_local': {
-            const x = parseInt(event.request.headers.get('x') ?? '');
-            const y = parseInt(event.request.headers.get('y') ?? '');
-            const z = parseInt(event.request.headers.get('z') ?? '');
+            const x = parseFloat(event.request.headers.get('x') ?? '');
+            const y = parseFloat(event.request.headers.get('y') ?? '');
+            const z = parseFloat(event.request.headers.get('z') ?? '');
 
             if (isNaN(x) || isNaN(y) || isNaN(z)) {
-                return badRequest('Invalid coordinates — x, y, z must be integers');
+                return badRequest('Invalid coordinates — x, y, z must be numbers');
             }
 
             try {
                 await setPositionLocal(x, y, z);
+                console.log(`[set_position_local] x=${x}, y=${y}, z=${z}`);
                 return text(`Local position set: x=${x}, y=${y}, z=${z}`);
+            } catch (err) {
+                return errorResponse(err);
+            }
+        }
+
+        // Guided "fly to here" — lat/lon/alt in GUIDED mode
+        case 'guided_goto': {
+            const lat     = parseFloat(event.request.headers.get('lat')      ?? '');
+            const lon     = parseFloat(event.request.headers.get('lon')      ?? '');
+            const alt     = parseFloat(event.request.headers.get('altitude') ?? '');
+
+            if (isNaN(lat) || isNaN(lon) || isNaN(alt)) {
+                return badRequest('Invalid coordinates — lat, lon, altitude must be numbers');
+            }
+            if (lat < -90 || lat > 90)   return badRequest('lat must be between -90 and 90');
+            if (lon < -180 || lon > 180) return badRequest('lon must be between -180 and 180');
+            if (alt < 0)                 return badRequest('altitude must be ≥ 0');
+
+            try {
+                await setPositionGlobal(lat, lon, alt);
+                console.log(`[guided_goto] lat=${lat} lon=${lon} alt=${alt}`);
+                return text(`Guided goto: lat=${lat}, lon=${lon}, alt=${alt} m`);
             } catch (err) {
                 return errorResponse(err);
             }

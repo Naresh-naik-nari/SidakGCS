@@ -168,6 +168,30 @@ export async function setAltitude(altitudeMeters: number): Promise<void> {
   await checkResponse(res, 'set_altitude');
 }
 
+/**
+ * Commands the vehicle to fly to a specific global position in GUIDED mode.
+ * Sends SET_POSITION_TARGET_GLOBAL_INT — the MAVLink equivalent of Mission Planner's
+ * "Fly to Here" right-click action.
+ *
+ * @param lat        - Latitude in decimal degrees (−90 … +90)
+ * @param lon        - Longitude in decimal degrees (−180 … +180)
+ * @param altMeters  - Target altitude in metres above home (AGL)
+ *
+ * Per ArduPilot docs: https://ardupilot.org/copter/docs/ac2_guidedmode.html
+ */
+export async function goToLocation(lat: number, lon: number, altMeters: number): Promise<void> {
+  const res = await fetch('/api/mavlink/guided_goto', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      lat:       String(lat),
+      lon:       String(lon),
+      altitude:  String(altMeters),
+    }
+  });
+  await checkResponse(res, 'guided_goto');
+}
+
 // ─── Mission ─────────────────────────────────────────────────────────────────
 
 /** Clears all mission items from the flight controller. */

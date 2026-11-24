@@ -658,14 +658,13 @@
       {toGridRef(cursorLat, cursorLng)}
     </div>
   {/if}
+  <OfflineMapDownloader 
+    bind:isOpen={showOfflineDownloader} 
+    onDownloadComplete={(center, radius) => showDownloadedArea(center, radius)}
+  />
+
+  <SwathDisplay 
+    bind:enabled={swathEnabled}
+    showInfo={true}
+  />
 </div>
-
-<OfflineMapDownloader 
-  bind:isOpen={showOfflineDownloader} 
-  onDownloadComplete={(center, radius) => showDownloadedArea(center, radius)}
-/>
-
-<SwathDisplay 
-  bind:enabled={swathEnabled}
-  showInfo={true}
-/>

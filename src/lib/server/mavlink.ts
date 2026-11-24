@@ -967,16 +967,22 @@ async function setPositionLocal(x: number, y: number, z: number) {
     m.timeBootMs      = 0;
     m.targetSystem    = 1;
     m.targetComponent = 1;
-    // MAV_FRAME_BODY_OFFSET_NED (9): offset relative to current position in body frame.
-    // x=forward/back, y=right/left, z=down/up (negative=up).
-    // Frame 1 (LOCAL_NED) sends absolute coords from EKF origin ? wrong for DPad.
+    // MAV_FRAME_BODY_OFFSET_NED (9): offset relative to current position AND heading.
+    // x=forward/back, y=right/left, z=down (NED — negative=up).
+    // Docs: https://ardupilot.org/dev/docs/copter-commands-in-guided-mode.html
     m.coordinateFrame = 9;
-    // typeMask 0x0FF8: use x,y,z position only ? ignore velocity, accel, yaw, yaw_rate
-    (m as any).typeMask = 0x0FF8;
+    // typeMask 0x0DF8 = 0b110111111000: "Use Position only"
+    // bits 0-2 clear  → use x, y, z position
+    // bits 3-8 set    → ignore velocity and acceleration
+    // bits 9  clear   → (force, ignored)
+    // bits 10-11 set  → ignore yaw and yaw_rate  ← was 0x0FF8 which had these wrong
+    // Source: ArduPilot docs — 0x0DF8 / 3576 decimal = "Use Position"
+    (m as any).typeMask = 0x0DF8;
     m.x = x; m.y = y; m.z = z;
     m.vx = 0; m.vy = 0; m.vz = 0;
     m.afx = 0; m.afy = 0; m.afz = 0;
     m.yaw = 0; m.yawRate = 0;
+    console.log(`[setPositionLocal] frame=BODY_OFFSET_NED x=${x} y=${y} z=${z} typeMask=0x0DF8`);
     await _send(m);
 }
 
@@ -1022,6 +1028,41 @@ async function setAltitudeGlobal(altMeters: number) {
     console.log(`🔼 setAltitudeGlobal: ${altMeters} m (lat=${lastLat}, lon=${lastLon})`);
 }
 
+/**
+ * Command the vehicle to fly to a specific lat/lon/alt in GUIDED mode.
+ * Uses SET_POSITION_TARGET_GLOBAL_INT (MAVLink msg #86).
+ *
+ * typeMask 0x0DF8 = 0b110111111000:
+ *   bits 0-2 clear  → use lat, lon, alt
+ *   bits 3-8 set    → ignore velocity and acceleration
+ *   bits 10-11 set  → ignore yaw / yaw_rate
+ *
+ * coordinateFrame 6 = MAV_FRAME_GLOBAL_RELATIVE_ALT_INT
+ * lat/lon are supplied as integer ×1e7; alt is metres above home (AGL).
+ *
+ * Per ArduPilot docs: https://ardupilot.org/copter/docs/ac2_guidedmode.html
+ */
+async function setPositionGlobal(lat: number, lon: number, altMeters: number) {
+    const p = getPort(); if (!p || !getReader()) { S.online = false; return; }
+    const m = new common.SetPositionTargetGlobalInt();
+    m.timeBootMs      = 0;
+    m.targetSystem    = 1;
+    m.targetComponent = 1;
+    m.coordinateFrame = 6;        // MAV_FRAME_GLOBAL_RELATIVE_ALT_INT
+
+    // Use lat + lon + alt; ignore velocity, acceleration, yaw
+    (m as any).typeMask = 0x0DF8; // 0b110111111000
+
+    (m as any).latInt  = Math.round(lat * 1e7);
+    (m as any).lonInt  = Math.round(lon * 1e7);
+    m.alt              = altMeters;
+    m.vx = 0; m.vy = 0; m.vz = 0;
+    m.afx = 0; m.afy = 0; m.afz = 0;
+    m.yaw = 0; m.yawRate = 0;
+    console.log(`🎯 setPositionGlobal: lat=${lat.toFixed(7)} lon=${lon.toFixed(7)} alt=${altMeters} m`);
+    await _send(m);
+}
+
 function convertBigIntToNumber(obj: any): any {
     if (typeof obj === 'bigint') return Number(obj);
     if (Array.isArray(obj)) return obj.map(convertBigIntToNumber);
@@ -1046,6 +1087,7 @@ export {
     loadMissionItem,
     clearAllMissionItems,
     setPositionLocal,
+    setPositionGlobal,
     setAltitudeGlobal,
     common,
 };
