@@ -9,7 +9,9 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "eslint .",
-		"list-ports": "node list-ports.js"
+		"list-ports": "node list-ports.js",
+		"setup-db": "node --experimental-strip-types scripts/setup-db.ts",
+		"test-udp": "node --experimental-strip-types scripts/test-udp.ts"
 	},
 	"optionalDependencies": {
 		"@rollup/rollup-darwin-arm64": "^4.21.0",

@@ -732,7 +732,7 @@
   }
 
   .mission-btns > button {
-    color: white;
+    color: var(--fontColor);
   }
 
   #mission-plan-actions {

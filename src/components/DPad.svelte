@@ -135,7 +135,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #ffffff;
+    color: var(--fontColor);
     font-size: 24px;
     transition: all 0.2s ease;
   }
@@ -185,7 +185,7 @@
   }
 
   .d-pad button:hover {
-    color: #4e94f7;
+    color: #2563eb;
   }
 
   .d-pad button.holding {
@@ -199,7 +199,8 @@
     left: 50%;
     width: 60px;
     height: 60px;
-    background-color: var(--primaryColor);
+    background-color: var(--secondaryColor);
+    border: 2px solid var(--tertiaryColor);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     display: flex;
@@ -209,6 +210,7 @@
 
   .move-text {
     font-size: 10pt;
+    font-weight: 600;
     color: var(--fontColor);
   }
   

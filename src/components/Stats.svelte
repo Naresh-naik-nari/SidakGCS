@@ -215,29 +215,28 @@
     }
   }
 
-  function confirmCalibration() {
+  function initRTL() {
     let modal = new Modal({
       target: document.body,
       props: {
-        title: 'Sensor Calibration',
-        content: 'Are you sure you want to calibrate the sensors? If so please manually specify the current heading (direction) of the MAV in degrees.',
-        inputs: [
-          {
-            type: 'number',
-            placeholder: 'Current Heading',
-            required: true,
-          }
-        ],
+        title: '🏠 Return to Launch',
+        content: 'Are you sure you want to activate RTL? The vehicle will climb to RTL_ALT and return to the home point.',
         isOpen: true,
         confirmation: true,
         notification: false,
         onConfirm: async () => {
-          const heading = isNaN(parseInt(modal.inputValues![0])) ? 0 : modal.inputValues![0];
-          await sendMavlinkCommand('FIXED_MAG_CAL_YAW', `${heading},0,${mavLocation.lat},${mavLocation.lng}`, 'true');
-          await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
-          await sendMavlinkCommand('PREFLIGHT_CALIBRATION', '0,0,0,0,4,0,0', true);
+          await sendMavlinkCommand('DO_SET_MODE', '1,6', true); // 6 = RTL
           modal.$destroy();
-        }
+          const notification = new Notification({
+            target: document.body,
+            props: {
+              title: '🏠 RTL Activated',
+              content: 'Vehicle is returning to launch.',
+              type: 'warning',
+            }
+          });
+          setTimeout(() => notification.$destroy(), 8000);
+        },
       }
     });
   }
@@ -807,7 +806,7 @@
         <span>Mode:</span>
         <div class="mode-dropdown relative">
           <button
-            class="mode-toggle flex items-center gap-1 text-orange-400 font-medium"
+            class="mode-toggle flex items-center gap-1 font-medium"
             on:click={() => modeDropdownOpen = !modeDropdownOpen}
             aria-haspopup="listbox"
             aria-expanded={modeDropdownOpen}
@@ -854,7 +853,7 @@
     </div>
     <hr class="my-3" />
       <div class="w-full mb-2">Loaded Mission Plan:
-        <span class="text-[#66e1ff] {darkMode ? '' : 'brightness-90'}" title={missionPlanTitle}>
+        <span class="accent-text {darkMode ? '' : 'brightness-90'}" title={missionPlanTitle}>
           {missionPlanTitle || 'No mission plan loaded.'}
         </span>
       </div>
@@ -862,7 +861,7 @@
         <div class="w-full">
           <span>
             Mission Progress: {systemState === 'Unknown' ? '--' : mavMode === 'AUTO' ? missionProgress : 0}% (ETA {eta})
-            <span class="text-[#66e1ff]"> {mavMode === 'AUTO' ? (parseFloat(remainingDistance.toFixed(2)) || 0) : 0} m remaining</span>
+            <span class="accent-text"> {mavMode === 'AUTO' ? (parseFloat(remainingDistance.toFixed(2)) || 0) : 0} m remaining</span>
           </span>
           <div class="progress-bar rounded-full h-2.5 mt-3">
             <div class="progress-bar-inner h-2.5 rounded-full" style="width: {mavMode === 'AUTO' ? missionProgress : 0}%;"></div>
@@ -870,29 +869,29 @@
         </div>
         <div class="button-container mt-6">
           <div class="relative group">
-            <button class="circular-button" on:click={confirmCalibration}>
-              <i class="far fa-compass text-[#ffa704] fa-spin"></i>
-              <div class="tooltip text-white">Calibrate Sensors</div>
+            <button class="circular-button" on:click={initRTL} disabled={systemState === 'STANDBY'}>
+              <i class="fas fa-house text-[#f97316]"></i>
+              <div class="tooltip">Return to Launch</div>
             </button>
           </div>
           <div class="relative group">
             <button class="circular-button" on:click={releasePayload}>
               <i class="fas fa-parachute-box"></i>
-              <div class="tooltip text-white">Release Payload</div>
+              <div class="tooltip">Release Payload</div>
             </button>
           </div>
           {#if systemState === 'STANDBY'}
             <div class="relative group flex flex-col items-center">
               <button class="circular-button" on:click={initTakeoff} disabled={checkMode('AUTO', mavMode)}>
                 <i class="fas fa-plane-departure"></i>
-                <div class="tooltip text-white">Initiate Takeoff</div>
+                <div class="tooltip">Initiate Takeoff</div>
               </button>
             </div>
           {:else}
             <div class="relative group flex flex-col items-center">
               <button class="circular-button" on:click={initLanding} disabled={checkMode('AUTO', mavMode) || checkMode('LAND', mavMode)}>
                 <i class="fas fa-plane-arrival"></i>
-                <div class="tooltip text-white">Initiate Landing</div>
+                <div class="tooltip">Initiate Landing</div>
               </button>
             </div>
           {/if}
@@ -903,7 +902,7 @@
                 disabled={checkMode('AUTO', mavMode) && systemState !== 'STANDBY' || !missionLoaded}
               >
                 <i class="fas fa-play"></i>
-                <div class="tooltip text-white">Start/Resume Mission</div>
+                <div class="tooltip">Start/Resume Mission</div>
               </button>
             </div>
           {:else}
@@ -913,7 +912,7 @@
                 disabled={!checkMode('AUTO', mavMode) || !missionLoaded}
               >
                 <i class="fas fa-pause"></i>
-                <div class="tooltip text-white">Pause Mission (POSHOLD)</div>
+                <div class="tooltip">Pause Mission (POSHOLD)</div>
               </button>
             </div>
           {/if}
@@ -923,7 +922,7 @@
               disabled={!checkMode('AUTO', mavMode) || !missionLoaded}
             >
               <i class="fas fa-stop text-red-400"></i>
-              <div class="tooltip text-white">Stop Mission (RTL)</div>
+              <div class="tooltip">Stop Mission (RTL)</div>
             </button>
           </div>
         </div>
@@ -977,7 +976,7 @@
     justify-content: center;
     align-items: center;
     background-color: var(--tertiaryColor);
-    color: white;
+    color: var(--fontColor);
     font-size: 0.9rem;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -994,12 +993,16 @@
     left: 50%;
     transform: translateX(-50%);
     margin-bottom: 0.5rem;
-    padding: 0.5rem;
+    padding: 0.4rem 0.6rem;
     border-radius: 0.25rem;
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+    background-color: #1e293b;
+    color: #f8fafc;
+    font-size: 0.75rem;
+    pointer-events: none;
   }
 
   .circular-button:hover .tooltip {
@@ -1008,9 +1011,12 @@
     transform: translateX(-50%) translateY(-0.5rem);
   }
 
-  button:disabled, button:disabled:hover {
-    background-color: #b5bcc5;
-    filter: brightness(0.7);
+  button:disabled,
+  button:disabled:hover {
+    background-color: var(--tertiaryColor);
+    color: var(--fontColor);
+    opacity: 0.4;
+    filter: none;
     cursor: not-allowed;
   }
 
@@ -1021,10 +1027,16 @@
     cursor: pointer;
     padding: 0;
     line-height: inherit;
+    color: var(--fontColor);
+    font-weight: 600;
   }
 
   .mode-toggle:hover {
     opacity: 0.8;
+  }
+
+  .accent-text {
+    color: #2563eb;
   }
 
   .mode-list {

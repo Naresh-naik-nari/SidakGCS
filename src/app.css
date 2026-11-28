@@ -156,134 +156,356 @@ body:not(.dark-mode) {
   color: #1e293b;
 }
 
-/* Light mode — dashboard panels get card-style shadow + border */
+/* ── App shell ── */
+body:not(.dark-mode) .kite-app {
+  background: var(--primaryColor) !important;
+  color: #1e293b !important;
+}
+
+/* ── Status bar + top bar ── */
+body:not(.dark-mode) .kite-statusbar,
+body:not(.dark-mode) .kite-topbar {
+  background: var(--primaryColor) !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+  color: #1e293b !important;
+}
+
+/* ── Navigation rail ── */
+body:not(.dark-mode) .kite-rail {
+  background: #1e3a5f !important;
+  border-right-color: #1e293b22 !important;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.12) !important;
+}
+body:not(.dark-mode) .rail-btn {
+  color: #cbd5e1 !important;
+}
+body:not(.dark-mode) .rail-btn:hover {
+  background: rgba(255,255,255,0.14) !important;
+  color: #fff !important;
+}
+body:not(.dark-mode) .rail-btn.active {
+  background: rgba(255,255,255,0.18) !important;
+  color: #fff !important;
+}
+body:not(.dark-mode) .rail-sep {
+  background: rgba(255,255,255,0.2) !important;
+}
+
+/* ── Dashboard panels ── */
 body:not(.dark-mode) .dashboard {
   box-shadow:
     0 1px 3px rgba(0,0,0,0.08),
     0 4px 16px rgba(0,0,0,0.06) !important;
   border: 1px solid rgba(148,163,184,0.25);
-}
-
-/* Light mode — stronger text contrast */
-body:not(.dark-mode) .stats,
-body:not(.dark-mode) .status-bar {
   color: #1e293b !important;
 }
 
-/* Light mode — panel labels dimmer */
-body:not(.dark-mode) .label,
-body:not(.dark-mode) .icon-dim {
-  color: #64748b !important;
+/* ── Stats / Controls text ── */
+body:not(.dark-mode) .stats,
+body:not(.dark-mode) .status-bar,
+body:not(.dark-mode) .controls,
+body:not(.dark-mode) .missionPlan {
+  color: #1e293b !important;
 }
 
-/* Light mode — values bolder */
+/* ── Generic label / value helpers ── */
+body:not(.dark-mode) .label {
+  color: #475569 !important;
+}
 body:not(.dark-mode) .value {
   color: #0f172a !important;
   font-weight: 700;
 }
 
-/* Light mode — dividers cleaner */
-body:not(.dark-mode) .divider {
-  background-color: #cbd5e1 !important;
+/* ── Dividers / separators ── */
+body:not(.dark-mode) .divider,
+body:not(.dark-mode) .separator {
+  background-color: #94a3b8 !important;
   opacity: 1 !important;
 }
-
-/* Light mode — nav sidebar */
-body:not(.dark-mode) .desktop-nav,
-body:not(.dark-mode) .mobile-nav {
-  background: linear-gradient(180deg, #1e3a5f 0%, #1e293b 100%) !important;
-  box-shadow: 2px 0 12px rgba(0,0,0,0.15);
-}
-
-/* Light mode — nav buttons on dark sidebar stay white */
-body:not(.dark-mode) .nav-button,
-body:not(.dark-mode) .nav-icon {
-  color: #e2e8f0 !important;
-}
-body:not(.dark-mode) .nav-button:hover {
-  background-color: rgba(255,255,255,0.12) !important;
-  color: #fff !important;
-}
-
-/* Light mode — hr and borders */
 body:not(.dark-mode) hr {
   border-color: #cbd5e1 !important;
 }
 
-/* Light mode — buttons */
+/* ── Circular action buttons ── */
 body:not(.dark-mode) .circular-button {
   background-color: #e2e8f0 !important;
   color: #1e293b !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12) !important;
 }
 body:not(.dark-mode) .circular-button:hover {
   background-color: #cbd5e1 !important;
+  color: #0f172a !important;
   filter: none !important;
 }
+/* Keep coloured icon tints readable in light mode */
+body:not(.dark-mode) .circular-button .fas,
+body:not(.dark-mode) .circular-button .far {
+  opacity: 0.85;
+}
 
-/* Light mode — progress bar track */
-body:not(.dark-mode) .progress-bar {
+/* ── Alt / rotate / set buttons ── */
+body:not(.dark-mode) .alt-button,
+body:not(.dark-mode) .rotate-button {
+  background-color: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+body:not(.dark-mode) .alt-button:hover,
+body:not(.dark-mode) .rotate-button:hover {
   background-color: #cbd5e1 !important;
+  filter: none !important;
+}
+body:not(.dark-mode) .set-btn {
+  background-color: #e2e8f0 !important;
+  color: #1e293b !important;
+  border-color: #94a3b8 !important;
+}
+body:not(.dark-mode) .set-btn:hover {
+  background-color: #2563eb !important;
+  color: #fff !important;
+  border-color: #2563eb !important;
 }
 
-/* Light mode — connection status bar */
-body:not(.dark-mode) .status-bar {
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  border: 1px solid rgba(148,163,184,0.3);
-}
-
-/* Light mode — pill badges */
-body:not(.dark-mode) .pill-gray {
-  background-color: rgba(71,85,105,0.1) !important;
-  color: #475569 !important;
-}
-
-/* Light mode — inputs */
+/* ── Inputs ── */
 body:not(.dark-mode) input[type="text"],
 body:not(.dark-mode) input[type="number"],
 body:not(.dark-mode) input[type="password"],
-body:not(.dark-mode) select {
+body:not(.dark-mode) select,
+body:not(.dark-mode) textarea {
   background-color: #fff !important;
   border-color: #94a3b8 !important;
   color: #1e293b !important;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.06) !important;
 }
 body:not(.dark-mode) input:focus,
-body:not(.dark-mode) select:focus {
+body:not(.dark-mode) select:focus,
+body:not(.dark-mode) textarea:focus {
   border-color: #2563eb !important;
   outline: none;
   box-shadow: 0 0 0 3px rgba(37,99,235,0.12) !important;
 }
+body:not(.dark-mode) input::placeholder {
+  color: #94a3b8 !important;
+}
 
-/* Light mode — mode dropdown */
+/* ── Progress bar ── */
+body:not(.dark-mode) .progress-bar {
+  background-color: #cbd5e1 !important;
+}
+
+/* ── D-Pad ── */
+body:not(.dark-mode) .d-pad {
+  border-color: #94a3b8 !important;
+}
+body:not(.dark-mode) .center-circle {
+  background-color: #2563eb !important;
+}
+body:not(.dark-mode) .center-circle .move-text {
+  color: #fff !important;
+}
+body:not(.dark-mode) .d-pad button {
+  color: #1e293b !important;
+}
+body:not(.dark-mode) .d-pad button:hover,
+body:not(.dark-mode) .d-pad button.holding {
+  color: #2563eb !important;
+}
+
+/* ── Mode dropdown ── */
+body:not(.dark-mode) .mode-toggle {
+  color: #1d4ed8 !important;
+}
 body:not(.dark-mode) .mode-list {
   background-color: #fff !important;
-  border: 1px solid #cbd5e1 !important;
+  border-color: #cbd5e1 !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
-}
-body:not(.dark-mode) .mode-item:hover {
-  background-color: #f1f5f9 !important;
 }
 body:not(.dark-mode) .mode-item {
   color: #1e293b !important;
 }
-
-/* Light mode — battery colors stay vivid */
-body:not(.dark-mode) .battery-status.green { color: #16a34a !important; }
-body:not(.dark-mode) .battery-status.yellow { color: #d97706 !important; }
-body:not(.dark-mode) .battery-status.red { color: #dc2626 !important; }
-
-/* Light mode — OSD overlay on video */
-body:not(.dark-mode) .osd-block {
-  background: rgba(255,255,255,0.82) !important;
-  color: #0f172a !important;
+body:not(.dark-mode) .mode-item:hover {
+  background-color: #f1f5f9 !important;
 }
-body:not(.dark-mode) .osd-label {
+body:not(.dark-mode) .mode-item-active {
+  color: #1d4ed8 !important;
+}
+body:not(.dark-mode) .mode-group-label {
+  color: #64748b !important;
+}
+
+/* ── Connection status bar pills ── */
+body:not(.dark-mode) .pill-gray {
+  background-color: rgba(71,85,105,0.12) !important;
+  color: #475569 !important;
+}
+body:not(.dark-mode) .conn-btn-c {
+  background-color: rgba(37,99,235,0.1) !important;
   color: #2563eb !important;
+  border-color: rgba(37,99,235,0.35) !important;
 }
-body:not(.dark-mode) .osd-val {
+body:not(.dark-mode) .conn-btn-dc {
+  background-color: rgba(239,68,68,0.1) !important;
+  color: #dc2626 !important;
+  border-color: rgba(239,68,68,0.3) !important;
+}
+
+/* ── Kite tiles (sensor health in top bar) ── */
+body:not(.dark-mode) .kite-tile {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: #cbd5e1 !important;
+}
+body:not(.dark-mode) .kite-batt {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: #cbd5e1 !important;
+}
+body:not(.dark-mode) .kite-mode-badge {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+body:not(.dark-mode) .kite-link {
+  background: rgba(255,255,255,0.6) !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+body:not(.dark-mode) .kite-btn {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: #94a3b8 !important;
+  color: #1e293b !important;
+}
+body:not(.dark-mode) .kite-btn:hover {
+  background: #e2e8f0 !important;
+}
+body:not(.dark-mode) .kite-btn.primary {
+  background: #2563eb !important;
+  color: #fff !important;
+  border-color: #1d4ed8 !important;
+}
+body:not(.dark-mode) .kite-btn.danger {
+  background: #ef4444 !important;
+  color: #fff !important;
+  border-color: #dc2626 !important;
+}
+
+/* ── Panels ── */
+body:not(.dark-mode) .kite-panel {
+  background: #f8fafc !important;
+  border-right-color: #cbd5e1 !important;
+  box-shadow: 4px 0 16px rgba(0,0,0,0.08) !important;
+}
+body:not(.dark-mode) .kite-panel-head {
+  color: #0f172a !important;
+  border-bottom-color: #cbd5e1 !important;
+}
+body:not(.dark-mode) .kite-panel-head .panel-close {
+  color: #64748b !important;
+}
+body:not(.dark-mode) .kite-panel-head .panel-close:hover {
+  background: #e2e8f0 !important;
   color: #0f172a !important;
 }
+
+/* ── Widgets ── */
+body:not(.dark-mode) .kite-widget {
+  background: rgba(255,255,255,0.88) !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+}
+body:not(.dark-mode) .kite-widget .widget-head {
+  color: #475569 !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+body:not(.dark-mode) .kite-num .num-big {
+  color: #0f172a !important;
+}
+
+/* ── Map control buttons ── */
+body:not(.dark-mode) .map-btn,
+body:not(.dark-mode) .kite-map-controls .mc-btn {
+  background: rgba(255,255,255,0.92) !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1) !important;
+}
+body:not(.dark-mode) .map-btn:hover,
+body:not(.dark-mode) .kite-map-controls .mc-btn:hover {
+  background: #e2e8f0 !important;
+}
+body:not(.dark-mode) .kite-map-controls .mc-btn.active {
+  background: #2563eb !important;
+  color: #fff !important;
+  border-color: #1d4ed8 !important;
+}
+
+/* ── Map toggle label ── */
+body:not(.dark-mode) #map-toggle {
+  background: rgba(255,255,255,0.9) !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+/* ── Event log ── */
+body:not(.dark-mode) .log-row {
+  background: #fff !important;
+  border-color: #e2e8f0 !important;
+}
+body:not(.dark-mode) .log-row:hover {
+  border-color: #94a3b8 !important;
+}
+body:not(.dark-mode) .detail-panel {
+  background: #f8fafc !important;
+  border-color: #94a3b844 !important;
+}
+body:not(.dark-mode) .field-key {
+  color: #64748b !important;
+}
+body:not(.dark-mode) .field-val {
+  color: #0f172a !important;
+}
+body:not(.dark-mode) .toggle-chip {
+  background: #e2e8f0 !important;
+  color: #475569 !important;
+  border-color: #94a3b8 !important;
+}
+body:not(.dark-mode) .toggle-chip.active {
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+  border-color: #93c5fd !important;
+}
+body:not(.dark-mode) .search-input {
+  background: #fff !important;
+  color: #1e293b !important;
+  border-color: #94a3b8 !important;
+}
+body:not(.dark-mode) .scroll-btn {
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+  border-color: #93c5fd !important;
+}
+
+/* ── Tooltip ── */
+body:not(.dark-mode) .tooltip {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+/* ── Tailwind gray utility overrides used directly in templates ── */
+body:not(.dark-mode) .text-gray-400 { color: #64748b !important; }
+body:not(.dark-mode) .text-gray-300 { color: #94a3b8 !important; }
+
+/* ── Battery colours stay vivid ── */
+body:not(.dark-mode) .battery-status.green  { color: #16a34a !important; }
+body:not(.dark-mode) .battery-status.yellow { color: #d97706 !important; }
+body:not(.dark-mode) .battery-status.red    { color: #dc2626 !important; }
+
+/* ── OSD overlay on video ── */
+body:not(.dark-mode) .osd-block {
+  background: rgba(255,255,255,0.88) !important;
+  color: #0f172a !important;
+}
+body:not(.dark-mode) .osd-label { color: #2563eb !important; }
+body:not(.dark-mode) .osd-val   { color: #0f172a !important; }
 
 @media (max-width: 990px) {
   .dashboard-container {

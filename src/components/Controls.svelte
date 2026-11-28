@@ -114,7 +114,7 @@
       <Map {mavLocation} hideOverlay={true} />
     </div>
     <div class="flex justify-between w-full px-2 pt-2">
-      <span class="text-xs text-gray-400">
+      <span class="text-xs unit-label">
         <a href="https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation)" target="_blank">
           <i class="far fa-question-circle relative">
             <div class="tooltip">&lt; 1:	Ideal
@@ -130,7 +130,7 @@
           {mavSatellite.hdop.toFixed(2)}
         </span>
       </span>
-      <span class="text-xs text-gray-400">
+      <span class="text-xs unit-label">
         # Sats: <span class="{mavSatellite.total < 6 ? 'text-red-300' : 'text-green-300'}">
         {mavSatellite.total}</span>
       </span>
@@ -144,11 +144,11 @@
     <div class="inputs column h-full flex flex-col items-center justify-center text-center min-w-[150px] overflow-auto gap-2 self-center">
       <form>
         <div id="max-speed-container" class="flex flex-col items-center">
-          <div class="label text-sm mb-1">Max Speed<span class="text-xs text-gray-400 mt-1 ml-1">(m/s)</span></div>
+          <div class="label text-sm mb-1">Max Speed<span class="unit-label text-xs mt-1 ml-1">(m/s)</span></div>
           <input type="number" min="0" class="form-input mb-2" placeholder="10 m/s" bind:value={maxSpeed} />
         </div>
         <div class="flex flex-col items-center justify-center">
-          <div class="label text-sm mb-1">Go to Altitude<span class="text-xs text-gray-400 mt-1 ml-1">(m)</span></div>
+          <div class="label text-sm mb-1">Go to Altitude<span class="unit-label text-xs mt-1 ml-1">(m)</span></div>
           <input type="number" min="0" max="500" class="form-input" placeholder="e.g. 30 m" bind:value={altitudeSetPoint} />
         </div>
         <button class="set-btn text-[8pt] rounded-full py-1 px-3 mt-2"
@@ -173,7 +173,7 @@
     <div class="fly-to column flex flex-col items-center justify-center text-center min-w-[160px] gap-2 self-center">
       <div class="label text-sm mb-1">
         Fly to Here
-        <span class="text-xs text-gray-400 ml-1">(GUIDED only)</span>
+        <span class="unit-label text-xs ml-1">(GUIDED only)</span>
       </div>
       <form class="flex flex-col gap-1 w-full items-center">
         <input type="number" step="0.000001" class="form-input w-full" placeholder="Latitude °"
@@ -282,7 +282,7 @@
   .alt-button,
   .rotate-button {
     appearance: none;
-    background-color: #374151;
+    background-color: var(--tertiaryColor);
     transition: background-color 0.3s ease;
   }
 
@@ -294,8 +294,8 @@
 
   .set-btn:hover {
     color: #ffffff;
-    background-color: #4e94f7;
-    border: 1px solid var(--secondaryColor);
+    background-color: #2563eb;
+    border: 1px solid #1d4ed8;
   }
 
   .use-current-btn {
@@ -308,7 +308,7 @@
 
   .use-current-btn:hover {
     opacity: 1;
-    background-color: #374151;
+    background-color: var(--secondaryColor);
   }
 
   input[type='number'] {
@@ -317,13 +317,13 @@
     border: 1px solid var(--tertiaryColor);
     border-radius: 1em;
     background-color: var(--secondaryColor);
-    color: white;
+    color: var(--fontColor);
     font-size: 10pt;
     transition: border-color 0.3s;
   }
 
   .form-input {
-    border: 1px solid #374151;
+    border: 1px solid var(--tertiaryColor);
     padding: 0.5rem;
   }
 
@@ -333,6 +333,7 @@
   }
 
   .alt-button,
+  .alt-button,
   .rotate-button {
     display: flex;
     justify-content: center;
@@ -340,7 +341,7 @@
     width: 3rem;
     height: 3rem;
     background-color: var(--tertiaryColor);
-    color: white;
+    color: var(--fontColor);
     font-size: 1.5rem;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -349,17 +350,17 @@
 
   .alt-button:hover,
   .rotate-button:hover {
-    filter: brightness(1.1);
+    filter: brightness(1.08);
   }
 
   .rotate-left:hover {
     animation: rotate-left 0.6s;
-    color: #4e94f7;
+    color: #2563eb;
   }
 
   .rotate-right:hover {
     animation: rotate-right 0.6s;
-    color: #4e94f7;
+    color: #2563eb;
   }
 
   .tooltip {
@@ -370,13 +371,17 @@
     max-width: 200px;
     display: flex;
     margin-bottom: 0.5rem;
-    padding: 0.5rem;
+    padding: 0.4rem 0.6rem;
     border-radius: 0.25rem;
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
     z-index: 1;
+    background-color: #1e293b;
+    color: #f8fafc;
+    font-size: 0.75rem;
+    pointer-events: none;
   }
 
   i:hover .tooltip {
@@ -405,16 +410,21 @@
 
   .alt-button:hover .alt-up {
     transform: translateY(-0.2rem);
-    color: #4e94f7;
+    color: #2563eb;
   }
 
-  .alt-button:hover .alt-down  {
+  .alt-button:hover .alt-down {
     transform: translateY(0.2rem);
-    color: #4e94f7;
+    color: #2563eb;
   }
   
   .label {
     font-size: 10pt;
+  }
+
+  .unit-label {
+    color: var(--fontColor);
+    opacity: 0.6;
   }
 
   .map-container {

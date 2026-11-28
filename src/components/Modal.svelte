@@ -66,7 +66,7 @@
         <div class="px-4 py-2 text-lg font-semibold">
           {title}
         </div>
-        <button on:click={closeModal} class="absolute top-2 right-2 text-gray-400 hover:text-white text-2xl">
+        <button on:click={closeModal} class="close-btn absolute top-2 right-2 text-2xl">
           &times;
         </button>
       </div>
@@ -132,6 +132,15 @@
     background: none;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
+  }
+
+  .close-btn {
+    color: var(--fontColor);
+    opacity: 0.6;
+  }
+  .close-btn:hover {
+    opacity: 1;
+    color: var(--fontColor);
   }
 
   .form-input {

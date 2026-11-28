@@ -1,8 +1,10 @@
 import { createClient } from "@libsql/client";
 
-export const db = createClient({
-	url: "file:./src/data.db"
-});
+// DATABASE_URL can be overridden via environment variable.
+// Default keeps backward-compatibility with the dev setup.
+const dbUrl = process.env.DATABASE_URL ?? 'file:./src/data.db';
+
+export const db = createClient({ url: dbUrl });
 
 // Create tables if they don't exist
 await db.execute(`CREATE TABLE IF NOT EXISTS user (

@@ -423,8 +423,8 @@
                 <h2 class="text-lg font-semibold mr-2">MAVLink Events</h2>
 
                 <!-- Heartbeat indicator -->
-                <div class="hb-wrap relative flex items-center gap-1 text-xs text-gray-400 mr-2" title="{heartbeatInfo}">
-                    <i class="fas fa-heart hb-icon text-gray-500"></i>
+                <div class="hb-wrap relative flex items-center gap-1 text-xs mr-2" title="{heartbeatInfo}">
+                    <i class="fas fa-heart hb-icon"></i>
                     <span class="system-state-badge">{systemState}</span>
                 </div>
 
@@ -456,7 +456,7 @@
             </div>
 
             <!-- ── Count bar ─────────────────────────────────────────────── -->
-            <div class="count-bar text-xs text-gray-400 flex items-center gap-3">
+            <div class="count-bar text-xs flex items-center gap-3">
                 <span>{filtered.length} events</span>
                 {#if !autoScroll}
                     <button class="scroll-btn" on:click={() => { autoScroll = true; logContainer.scrollTop = logContainer.scrollHeight; }}>
@@ -551,8 +551,8 @@
         letter-spacing: 0.04em;
     }
 
-    .hb-icon { font-size: 0.85rem; transition: color 0.2s; }
-    .hb-icon.beating { color: #f87171 !important; }
+    .hb-icon { font-size: 0.85rem; transition: color 0.2s; color: var(--fontColor); opacity: 0.5; }
+    :global(.hb-icon.beating) { color: #f87171 !important; opacity: 1; }
 
     .search-input {
         background: var(--tertiaryColor);
@@ -599,7 +599,7 @@
     .icon-btn.purple { background: #8b5cf6; }
 
     /* ── Count bar ───────────────────────────────────────────────────────────── */
-    .count-bar { flex-shrink: 0; }
+    .count-bar { flex-shrink: 0; color: var(--fontColor); opacity: 0.6; }
     .scroll-btn {
         background: #1e3a5f; color: #93c5fd;
         border: 1px solid #60a5fa;

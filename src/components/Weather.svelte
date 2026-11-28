@@ -212,7 +212,8 @@
 
   .location {
     font-size: 0.875rem;
-    color: #838383;
+    color: var(--fontColor);
+    opacity: 0.6;
   }
 
   .weather-summary {
@@ -235,12 +236,12 @@
   }
 
   #location-name, .weather-detail.wind {
-    color: #66e1ff;
+    color: #2563eb;
   }
 
   .weather-detail.crosswind {
     font-size: 0.78rem;
-    color: #a0d4ff;
+    color: #3b82f6;
     margin-top: 2px;
   }
 
@@ -269,13 +270,14 @@
   }
 
   .cw-label {
-    color: #88ddff;
+    color: var(--fontColor);
+    opacity: 0.75;
   }
 
   .cw-val {
     font-weight: 700;
     font-family: 'Courier New', monospace;
-    color: #66e1ff;
+    color: var(--fontColor);
   }
 
   .warn {

@@ -435,9 +435,9 @@
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background: #0d1117;
+    background: var(--primaryColor);
     font-family: 'Roboto', 'Segoe UI', sans-serif;
-    color: #e2e8f0;
+    color: var(--fontColor);
   }
 
   :global(.kite-body) {

@@ -178,7 +178,7 @@
         </div>
         <button
           on:click={closeModal}
-          class="absolute top-2 right-2 text-gray-400 hover:text-white text-2xl"
+          class="close-modal-btn absolute top-2 right-2 text-2xl"
         >
           &times;
         </button>
@@ -233,7 +233,7 @@
       <ul class="overflow-auto h-full p-2 text-sm">
         {#if missionPlans.length != 0}
           {#each missionPlans as plan (plan.id)}
-            <li class="inline-block justify-between items-center px-2 py-1 rounded mb-2 w-full text-white">
+            <li class="inline-block justify-between items-center px-2 py-1 rounded mb-2 w-full">
               <span class="mr-2" title={plan.title}>{plan.title.substring(0, 11)}{#if plan.title.length >= 11}...{/if}</span>
               <div class="flex items-center gap-3 float-right relative">
                 <button
@@ -287,8 +287,19 @@
   }
 
   .import-btn:hover {
-    color: white;
-    background-color: #4e94f7;
+    color: #ffffff;
+    background-color: #2563eb;
+  }
+
+  .close-modal-btn {
+    color: var(--fontColor);
+    opacity: 0.6;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .close-modal-btn:hover {
+    opacity: 1;
   }
 
   button {

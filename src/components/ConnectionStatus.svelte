@@ -263,7 +263,8 @@
 
     .pill-gray {
         background-color: rgba(107, 114, 128, 0.15);
-        color: #9ca3af;
+        color: var(--fontColor);
+        opacity: 0.75;
     }
 
     .divider {
@@ -321,11 +322,13 @@
     /* Disarm button — gray */
     .arm-btn-disarm {
         background-color: rgba(107, 114, 128, 0.15);
-        color: #9ca3af;
+        color: var(--fontColor);
+        opacity: 0.8;
         border-color: rgba(107, 114, 128, 0.3);
     }
     .arm-btn-disarm:hover {
         background-color: rgba(107, 114, 128, 0.3);
+        opacity: 1;
     }
 
     /* Confirm step — amber, pulsing */
